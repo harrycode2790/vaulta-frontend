@@ -1,0 +1,12 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f3f7;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  /* must NOT clip overflow on the block axis so sticky sidebar works */
+  overflow-x: clip;
+}

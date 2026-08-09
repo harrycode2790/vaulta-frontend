@@ -1,0 +1,713 @@
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding: 28px 32px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ══════════════════════════════
+   Header row
+   ══════════════════════════════ */
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.pageTitle {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: -0.025em;
+  margin-bottom: 8px;
+}
+
+.pageSub {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  max-width: 480px;
+}
+
+/* Security health card */
+.healthCard {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--color-white);
+  border: 1.5px solid #eaecef;
+  border-radius: 18px;
+  padding: 18px 22px;
+  flex-shrink: 0;
+  min-width: 270px;
+}
+
+.healthRingWrap {
+  flex-shrink: 0;
+}
+
+.healthInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.healthLabel {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+}
+
+.healthRating {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.healthTag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+/* ══════════════════════════════
+   Main grid
+   ══════════════════════════════ */
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 18px;
+  align-items: start;
+}
+
+.leftCol,
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ══════════════════════════════
+   Shared card shell
+   ══════════════════════════════ */
+
+.card {
+  background: var(--color-white);
+  border: 1.5px solid #eaecef;
+  border-radius: 20px;
+  padding: 22px 24px;
+  position: relative;
+}
+
+/* ══════════════════════════════
+   Section label (AUTH, etc.)
+   ══════════════════════════════ */
+
+.sectionLabel {
+  position: absolute;
+  top: 50%;
+  left: -32px;
+  transform: translateY(-50%) rotate(-90deg);
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: rgba(13, 43, 31, 0.18);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ══════════════════════════════
+   Toggle switch
+   ══════════════════════════════ */
+
+.toggle {
+  position: relative;
+  width: 48px;
+  height: 27px;
+  border-radius: 100px;
+  background: #d0d5dd;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggleOn {
+  background: #0D2B1F;
+}
+
+.toggleKnob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: var(--color-white);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.toggleOn .toggleKnob {
+  transform: translateX(21px);
+}
+
+/* ══════════════════════════════
+   Two-Factor Authentication
+   ══════════════════════════════ */
+
+.twoFaHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.twoFaLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+}
+
+.twoFaIconWrap {
+  width: 44px;
+  height: 44px;
+  background: #e8f5ee;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.twoFaTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.twoFaSub {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* Method picker */
+.methodGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.methodCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
+  border: 1.5px solid #eaecef;
+  border-radius: 14px;
+  background: #fafafa;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.methodCard:hover {
+  border-color: #b8ccc0;
+  background: #f6faf7;
+}
+
+.methodActive {
+  border-color: var(--color-primary) !important;
+  background: #f0f7f3 !important;
+}
+
+.methodIcon {
+  width: 36px;
+  height: 36px;
+  background: var(--color-white);
+  border: 1.5px solid #eaecef;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.methodActive .methodIcon {
+  border-color: rgba(13, 43, 31, 0.2);
+  color: var(--color-primary);
+}
+
+.methodText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.methodName {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.methodDesc {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+
+.methodCheck {
+  color: #d0d5dd;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.methodCheckOn {
+  color: var(--color-primary);
+}
+
+/* ══════════════════════════════
+   Biometric Access
+   ══════════════════════════════ */
+
+.bioRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.bioLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.bioIconWrap {
+  width: 44px;
+  height: 44px;
+  background: #f2f4f2;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5a7a6a;
+  flex-shrink: 0;
+}
+
+.bioTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 3px;
+  letter-spacing: -0.01em;
+}
+
+.bioSub {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.configureBtn {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.configureBtn:hover { opacity: 0.85; }
+
+/* ══════════════════════════════
+   Encryption card (dark)
+   ══════════════════════════════ */
+
+.encryptionCard {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  overflow: hidden;
+}
+
+/* Decorative shield ghost */
+.shieldBg {
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  width: 200px;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.encContent {
+  position: relative;
+  z-index: 1;
+}
+
+.encHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.encIconWrap {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6fcf97;
+  flex-shrink: 0;
+}
+
+.encTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: -0.01em;
+}
+
+.encDesc {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
+
+.encActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rotateBtn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-white);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.rotateBtn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+.downloadBtn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--color-white);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.downloadBtn:hover { background: rgba(255, 255, 255, 0.22); }
+
+/* ══════════════════════════════
+   Active Sessions
+   ══════════════════════════════ */
+
+.sessionsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sessionsTitle {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.logoutAllBtn {
+  background: none;
+  border: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #e03333;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.logoutAllBtn:hover { opacity: 0.75; }
+
+.sessionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sessionRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.sessionRow:last-child { border-bottom: none; }
+
+.sessionCurrent {
+  background: #f8faf9;
+  margin: 0 -24px;
+  padding: 13px 24px;
+  border-left: 3px solid #0D2B1F;
+}
+
+.sessionIcon {
+  width: 36px;
+  height: 36px;
+  background: #f4f6f4;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.sessionCurrent .sessionIcon {
+  background: #e6f5ec;
+  color: var(--color-primary);
+}
+
+.sessionInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.sessionDevice {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.sessionMeta {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.currentBadge {
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: 6px;
+  padding: 4px 8px;
+  flex-shrink: 0;
+}
+
+.revokeBtn {
+  background: none;
+  border: none;
+  color: #b0b7c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s;
+}
+
+.revokeBtn:hover {
+  color: #e03333;
+  background: #fef2f2;
+}
+
+/* ══════════════════════════════
+   Security Recommendations
+   ══════════════════════════════ */
+
+.recsCard {
+  background: #eef3ff;
+  border: 1.5px solid #dde6f8;
+  border-radius: 20px;
+  padding: 20px 22px;
+}
+
+.recsHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: #3b5bdb;
+}
+
+.recsIcon {
+  display: flex;
+  align-items: center;
+  color: #3b5bdb;
+}
+
+.recsTitle {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #2d4bb5;
+  letter-spacing: -0.01em;
+}
+
+.recsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.recIcon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+}
+
+.rec_ok   .recIcon { color: #16a34a; }
+.rec_warn .recIcon { color: #d97706; }
+
+.rec_ok   .recText { color: #374151; }
+.rec_warn .recText { color: #374151; }
+
+/* ══════════════════════════════
+   Zero-Knowledge banner
+   ══════════════════════════════ */
+
+.zkBanner {
+  background: var(--color-primary);
+  border-radius: 22px;
+  padding: 36px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.zkDeco {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 55%;
+  pointer-events: none;
+}
+
+.zkDeco svg {
+  width: 100%;
+  height: 100%;
+}
+
+.zkContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 520px;
+}
+
+.zkIconWrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6fcf97;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.zkTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: -0.015em;
+  margin-bottom: 10px;
+}
+
+.zkDesc {
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.7;
+}
+
+/* ══════════════════════════════
+   Responsive
+   ══════════════════════════════ */
+
+@media (max-width: 1050px) {
+  .mainGrid     { grid-template-columns: 1fr; }
+  .rightCol     { display: grid; grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 720px) {
+  .content      { padding: 20px 16px 36px; }
+  .headerRow    { flex-direction: column; gap: 16px; }
+  .healthCard   { width: 100%; min-width: unset; }
+  .methodGrid   { grid-template-columns: 1fr; }
+  .encActions   { flex-direction: column; }
+  .rightCol     { grid-template-columns: 1fr; }
+  .zkContent    { flex-direction: column; gap: 14px; }
+  .sectionLabel { display: none; }
+}

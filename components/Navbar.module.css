@@ -1,0 +1,91 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-white);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.logo {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.links {
+  display: flex;
+  list-style: none;
+  gap: 32px;
+  flex: 1;
+}
+
+.link {
+  font-size: 0.9375rem;
+  color: var(--color-text-primary);
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s;
+}
+
+.link:hover {
+  color: var(--color-primary);
+}
+
+.active {
+  font-weight: 600;
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.loginLink {
+  font-size: 0.9375rem;
+  color: var(--color-text-primary);
+  transition: color 0.15s;
+}
+
+.loginLink:hover {
+  color: var(--color-primary);
+}
+
+.ctaBtn {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background: var(--color-primary);
+  padding: 10px 24px;
+  border-radius: 100px;
+  transition: opacity 0.15s;
+}
+
+.ctaBtn:hover {
+  opacity: 0.88;
+}
+
+@media (max-width: 768px) {
+  .links {
+    display: none;
+  }
+
+  .container {
+    justify-content: space-between;
+  }
+}

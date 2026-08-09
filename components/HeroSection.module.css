@@ -1,0 +1,152 @@
+.hero {
+  background: var(--color-bg-dark);
+  padding: 88px 0 108px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+/* ── Left column ── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #a3d9b1;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 100px;
+  padding: 6px 14px;
+  margin-bottom: 24px;
+}
+
+.heading {
+  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #6fcf97;
+  margin-bottom: 20px;
+}
+
+.subtext {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 440px;
+  margin-bottom: 40px;
+}
+
+.actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background: var(--color-accent);
+  padding: 13px 28px;
+  border-radius: 8px;
+  transition: opacity 0.15s;
+}
+
+.primaryBtn:hover {
+  opacity: 0.88;
+}
+
+.secondaryBtn {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-white);
+  border: 1.5px solid rgba(255, 255, 255, 0.32);
+  padding: 13px 28px;
+  border-radius: 8px;
+  transition: border-color 0.15s;
+}
+
+.secondaryBtn:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Right column ── */
+
+.imageCol {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.imageCard {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  background: #112b1e;
+}
+
+
+.yieldBadge {
+  position: absolute;
+  bottom: -18px;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-white);
+  border-radius: 12px;
+  padding: 12px 18px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+}
+
+.yieldArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #eafaf1;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.yieldLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.yieldValue {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .imageCol {
+    display: none;
+  }
+}

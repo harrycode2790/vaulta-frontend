@@ -1,0 +1,225 @@
+.sidebar {
+  width: 248px;
+  flex-shrink: 0;
+  background: var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 16px 24px;
+  /* Sticky keeps sidebar fixed while the right column scrolls */
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Slide transition (mobile) */
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.28s;
+}
+
+/* ── Logo row ── */
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  margin-bottom: 40px;
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: -0.01em;
+}
+
+/* X button — mobile only */
+.closeBtn {
+  display: none;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.45);
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s;
+}
+
+.closeBtn:hover {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Nav */
+
+.nav {
+  flex: 1;
+}
+
+.navLabel {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.55);
+  transition: background 0.15s, color 0.15s;
+}
+
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.navItemActive {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.navItemActive:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.navIcon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.activeBar {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: #6fcf97;
+  border-radius: 2px 0 0 2px;
+}
+
+/* User section */
+
+.userSection {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.userAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #1e5c38;
+  border: 1.5px solid rgba(111, 207, 151, 0.3);
+  color: #6fcf97;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.userName {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userPlan {
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.38);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logoutBtn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s;
+}
+
+.logoutBtn:hover {
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ══════════════════════════════
+   Mobile: fixed + slide in
+   ══════════════════════════════ */
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 200;
+    height: 100vh;
+    /* Hidden off-screen by default */
+    transform: translateX(-100%);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Show the X close button on mobile */
+  .closeBtn {
+    display: flex;
+  }
+}

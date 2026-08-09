@@ -1,0 +1,229 @@
+.page {
+  min-height: 100vh;
+  background: #f0f3f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.card {
+  background: var(--color-white);
+  border: 1.5px solid #eaecef;
+  border-radius: 24px;
+  padding: 40px 40px 36px;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.logo {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 28px;
+  align-self: flex-start;
+}
+
+.iconWrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: #e6f5ec;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
+}
+
+.subtext {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+.emailHighlight {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.errorBanner {
+  width: 100%;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.successBanner {
+  width: 100%;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+/* OTP boxes */
+.codeRow {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.codeBox {
+  width: 56px;
+  height: 64px;
+  border: 1.5px solid #dde2e8;
+  border-radius: 14px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+}
+
+.codeBox:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(13, 43, 31, 0.08);
+  background: var(--color-white);
+}
+
+.codeBoxFilled {
+  border-color: var(--color-primary);
+  background: #f0f7f3;
+}
+
+/* Password field */
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #dde2e8;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  color: var(--color-text-primary);
+  background: #fafafa;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(13, 43, 31, 0.08);
+  background: var(--color-white);
+}
+
+.inputWithToggle { padding-right: 44px; }
+
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.eyeBtn:hover { color: var(--color-text-primary); }
+
+.submitBtn {
+  width: 100%;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.submitBtn:hover:not(:disabled) { opacity: 0.88; }
+.submitBtn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.resendRow {
+  margin-top: 20px;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.resendLink {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.backLink {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  transition: color 0.15s;
+}
+
+.backLink:hover { color: var(--color-primary); }
+
+@media (max-width: 480px) {
+  .card    { padding: 32px 20px 28px; }
+  .codeBox { width: 48px; height: 56px; font-size: 1.25rem; }
+}

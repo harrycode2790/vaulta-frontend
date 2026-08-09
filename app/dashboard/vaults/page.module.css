@@ -1,0 +1,491 @@
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding: 28px 32px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ══════════════════════════════
+   Page header
+   ══════════════════════════════ */
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pageTitle {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.025em;
+}
+
+.pageSub {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  max-width: 520px;
+}
+
+.createBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.createBtn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+/* ══════════════════════════════
+   Vault grid
+   ══════════════════════════════ */
+
+.vaultGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+/* ── Single vault card ── */
+
+.vaultCard {
+  background: var(--color-white);
+  border: 1.5px solid #eaecef;
+  border-radius: 22px;
+  padding: 22px 22px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.vaultCard:hover {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.07);
+  transform: translateY(-2px);
+}
+
+/* Featured (Duo) card */
+.vaultFeatured {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 20px rgba(13, 43, 31, 0.1);
+}
+
+.vaultFeatured:hover {
+  box-shadow: 0 10px 32px rgba(13, 43, 31, 0.15);
+}
+
+/* "Most Popular" corner ribbon */
+.popularBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 7px 16px;
+  border-radius: 0 22px 0 14px;
+  text-transform: uppercase;
+}
+
+/* Card top row: icon + plan tag */
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+/* Icon wrapper */
+.iconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon_solo   { background: #f2f4f2; color: #5a7a6a; }
+.icon_duo    { background: #e6f5ec; color: #0D2B1F; }
+.icon_family { background: #e8edf8; color: #3b5bdb; }
+
+/* Plan tag */
+.planTag {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 100px;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+}
+
+.plan_solo   { background: #f4f4f4;   color: #777; }
+.plan_duo    { background: #e6f5ec;   color: #1a4a30; }
+.plan_family { background: #eef1fd;   color: #3b5bdb; }
+
+/* Vault name */
+.vaultName {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.015em;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+/* MPY rate */
+.rateRow {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 18px;
+}
+
+.rateNum {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.rate_solo   { color: #5a7a6a; }
+.rate_duo    { color: #0D2B1F; }
+.rate_family { color: #3b5bdb; }
+
+.rateSuffix {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: #f0f2f1;
+  margin-bottom: 16px;
+}
+
+/* Balance row */
+.balanceRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.balanceLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.balanceValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.025em;
+}
+
+.changeCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.changePct {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.changeLabel {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+
+/* Withdraw button */
+.withdrawBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  border: 1.5px solid #e4e7e5;
+  border-radius: 10px;
+  background: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  transition: background 0.15s, border-color 0.15s;
+  margin-bottom: 14px;
+}
+
+.withdrawBtn:hover {
+  background: #f6f9f7;
+  border-color: #b8ccc0;
+}
+
+.withdrawFeatured {
+  border-color: rgba(13, 43, 31, 0.2);
+}
+
+.withdrawFeatured:hover {
+  background: #f0f7f3;
+  border-color: rgba(13, 43, 31, 0.35);
+}
+
+/* Mini chart */
+.chartArea {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chartMonths {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+
+.chartMonths span {
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* ══════════════════════════════
+   Bottom grid
+   ══════════════════════════════ */
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 18px;
+  align-items: stretch;
+}
+
+/* ── Yield optimization ── */
+
+.yieldCard {
+  background: #f7faf8;
+  border: 1.5px solid #e2ebe5;
+  border-radius: 22px;
+  padding: 30px 32px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.yieldLeft {
+  flex: 1;
+  min-width: 0;
+}
+
+.yieldTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.015em;
+  margin-bottom: 10px;
+}
+
+.yieldDesc {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.yieldLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  transition: gap 0.15s;
+}
+
+.yieldLink:hover { gap: 10px; }
+
+.yieldRight {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.yieldBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 76px;
+}
+
+.yieldBarWrap {
+  width: 16px;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.yieldBar {
+  width: 100%;
+  background: var(--color-primary);
+  border-radius: 4px 4px 0 0;
+  min-height: 8px;
+}
+
+.yieldStat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+}
+
+.yieldPct {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.yieldStatSub {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  max-width: 90px;
+  line-height: 1.45;
+}
+
+/* ── Instant transfer ── */
+
+.transferCard {
+  background: var(--color-primary);
+  border-radius: 22px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.transferIconWrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6fcf97;
+  margin-bottom: 20px;
+}
+
+.transferBody {
+  flex: 1;
+  margin-bottom: 24px;
+}
+
+.transferTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.transferDesc {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.65;
+}
+
+.transferBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: #6fcf97;
+  color: var(--color-primary);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.transferBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ══════════════════════════════
+   Responsive
+   ══════════════════════════════ */
+
+@media (max-width: 1100px) {
+  .vaultGrid  { grid-template-columns: 1fr 1fr; }
+  .bottomGrid { grid-template-columns: 1fr; }
+  .transferCard {
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+  }
+  .transferIconWrap { margin-bottom: 0; flex-shrink: 0; }
+  .transferBody { margin-bottom: 0; }
+  .transferBtn { width: auto; flex-shrink: 0; padding: 14px 28px; }
+}
+
+@media (max-width: 700px) {
+  .content    { padding: 20px 16px 36px; }
+  .vaultGrid  { grid-template-columns: 1fr; }
+  .pageHeader { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .createBtn  { width: 100%; justify-content: center; }
+  .yieldCard  { flex-direction: column; gap: 24px; align-items: flex-start; }
+  .yieldRight { width: 100%; }
+  .transferCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .transferBtn { width: 100%; }
+}

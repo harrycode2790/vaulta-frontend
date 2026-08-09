@@ -1,0 +1,193 @@
+/* ══════════════════════════════
+   Shell — full-height flex row
+   ══════════════════════════════ */
+
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f3f7;
+  position: relative;
+}
+
+/* ══════════════════════════════
+   Mobile overlay / backdrop
+   ══════════════════════════════ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.48);
+  z-index: 150;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.overlayVisible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ══════════════════════════════
+   Main column (right of sidebar)
+   ══════════════════════════════ */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+}
+
+/* ══════════════════════════════
+   Top bar
+   ══════════════════════════════ */
+
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-white);
+  border-bottom: 1px solid #eaecef;
+  height: 64px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+/* Left side */
+
+.topLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Hamburger — always present, subtle on desktop */
+.menuBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.menuBtn:hover {
+  background: #f4f6f9;
+  color: var(--color-primary);
+}
+
+/* Vaulta logo — only shown on mobile when sidebar is hidden */
+.mobileLogo {
+  display: none;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.pageTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.pageDate {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Right side */
+
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bellBtn {
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.bellBtn:hover {
+  background: #f4f6f9;
+  color: var(--color-primary);
+}
+
+.bellDot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-white);
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #c8eed7;
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* ══════════════════════════════
+   Body (page content)
+   ══════════════════════════════ */
+
+.body {
+  flex: 1;
+}
+
+/* ══════════════════════════════
+   Responsive
+   ══════════════════════════════ */
+
+/* Desktop — sidebar always visible, hide hamburger */
+@media (min-width: 901px) {
+  .menuBtn    { display: none; }
+  .mobileLogo { display: none; }
+}
+
+/* Mobile — sidebar is off-screen, hamburger drives it */
+@media (max-width: 900px) {
+  .mobileLogo  { display: block; }
+  .titleGroup  { display: none; }
+  .topBar      { padding: 0 16px; }
+}

@@ -1,0 +1,122 @@
+.section {
+  background: var(--color-bg-dark);
+  padding: 96px 0;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.heading {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: 12px;
+}
+
+.subtext {
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.6;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* border-separate lets us apply border-radius to individual cells */
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 560px;
+}
+
+/* ── Header row ── */
+
+.featureHead {
+  text-align: left;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.35);
+  padding-bottom: 24px;
+  width: 34%;
+}
+
+.colHead {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  padding: 0 16px 24px;
+}
+
+/* Duo header — top of the card */
+.duoHead {
+  color: var(--color-white);
+  font-size: 1.125rem;
+  font-weight: 700;
+  background: #1a4a30;
+  border-radius: 14px 14px 0 0;
+  border: 1px solid rgba(111, 207, 151, 0.2);
+  border-bottom: none;
+  padding: 20px 16px 16px;
+}
+
+/* ── Body rows ── */
+
+/* Row dividers sit on individual cells (needed with border-separate) */
+.featureCell,
+.cell {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.featureCell {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.45);
+  padding: 22px 0;
+}
+
+.cell {
+  text-align: center;
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.65);
+  padding: 22px 16px;
+}
+
+/* Duo body cells — the card sides */
+.duoCell {
+  background: #183d28;
+  color: var(--color-white);
+  font-weight: 500;
+  border-left: 1px solid rgba(111, 207, 151, 0.2);
+  border-right: 1px solid rgba(111, 207, 151, 0.2);
+  /* suppress the generic border-top; use the card border instead */
+  border-top: 1px solid rgba(111, 207, 151, 0.12);
+}
+
+/* Bottom of the card — last body row */
+tr:last-child .duoCell {
+  border-radius: 0 0 14px 14px;
+  border-bottom: 1px solid rgba(111, 207, 151, 0.2);
+}
+
+/* ── Check mark rows ── */
+
+.checkCell {
+  font-size: 1.1rem;
+  color: #6fcf97;
+}
+
+.duoCell.checkCell {
+  color: #6fcf97;
+}
