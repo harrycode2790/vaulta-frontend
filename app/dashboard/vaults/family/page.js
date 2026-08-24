@@ -45,7 +45,7 @@ function fmtDateTime(iso) {
 }
 function initials(user) {
   if (!user) return '?';
-  return ((user.firstname?.[0] ?? '') + (user.lastname?.[0] ?? '')).toUpperCase() || user.username?.[0]?.toUpperCase() || '?';
+  return user.username?.[0]?.toUpperCase() || '?';
 }
 function maturityProgress(startDate, maturityDate) {
   const now = Date.now(), start = new Date(startDate).getTime(), end = new Date(maturityDate).getTime();
@@ -65,6 +65,8 @@ function statusColor(status) {
   if (status === 'ACTIVE')    return styles.statusActive;
   if (status === 'MATURED')   return styles.statusMatured;
   if (status === 'WITHDRAWN') return styles.statusWithdrawn;
+  if (status === 'PENDING')   return styles.statusPending;
+  if (status === 'REJECTED')  return styles.statusRejected;
   return styles.statusActive;
 }
 function withdrawalStatusColor(status) {
@@ -93,7 +95,7 @@ function CopyBtn({ text }) {
 /* ══════════════════════════════
    Payment step (reusable)
    ══════════════════════════════ */
-function PaymentStep({ amount, onDone, label = 'Done — I\'ve Made Payment' }) {
+function PaymentStep({ amount, onDone, label = 'Done — I\'ve Made Payment', note }) {
   const [net, setNet] = useState('bitcoin');
   const btc = { network: 'Bitcoin',   address: 'bc1qs9q7ynsldjwn62rtjha3q29v54ewqef08fxrdp', amountToPay: amount };
   const eth = { network: 'Ethereum',  address: '0xFCa95a8187e9BEd54df102C111CedaF93f596F2D', amountToPay: amount };
@@ -101,6 +103,12 @@ function PaymentStep({ amount, onDone, label = 'Done — I\'ve Made Payment' }) 
 
   return (
     <div className={styles.modalBody}>
+      {note && (
+        <div className={styles.approvalNotice}>
+          <Ic.Clock />
+          <span>{note}</span>
+        </div>
+      )}
       <div className={styles.netToggleRow}>
         <button className={`${styles.netToggle} ${net === 'bitcoin'  ? styles.netToggleActive : ''}`} onClick={() => setNet('bitcoin')}><Ic.Bitcoin /> Bitcoin</button>
         <button className={`${styles.netToggle} ${net === 'ethereum' ? styles.netToggleActive : ''}`} onClick={() => setNet('ethereum')}><Ic.Ethereum /> Ethereum</button>
@@ -195,7 +203,7 @@ function CreateModal({ onClose, onCreated }) {
         )}
 
         {step === 2 && (
-          <PaymentStep amount={num} onDone={onClose} />
+          <PaymentStep amount={num} onDone={onClose} note="Your vault is pending admin approval and will activate once approved." />
         )}
       </div>
     </div>
@@ -278,8 +286,7 @@ function InviteModal({ plan, onClose, onSuccess }) {
             <div className={styles.foundUser}>
               <div className={styles.foundAvatar}>{initials(found)}</div>
               <div className={styles.foundInfo}>
-                <span className={styles.foundName}>{found.firstname} {found.lastname}</span>
-                <span className={styles.foundUsername}>@{found.username}</span>
+                <span className={styles.foundName}>@{found.username}</span>
               </div>
               <button className={styles.inviteUserBtn} onClick={handleInvite} disabled={loading || success}>
                 {loading ? '…' : 'Invite'}
@@ -350,10 +357,9 @@ function DepositModal({ plan, onClose, onSuccess }) {
               <div className={styles.previewCard}>
                 <div className={styles.previewRows}>
                   <div className={styles.previewRow}><span>Current Balance</span><span>{fmt(plan.amountSaved)}</span></div>
-                  <div className={styles.previewRow}><span className={styles.previewGreen}>+ Top-Up</span><span className={styles.previewGreen}>+ {fmt(num)}</span></div>
+                  <div className={styles.previewRow}><span className={styles.previewGreen}>Requested Top-Up</span><span className={styles.previewGreen}>+ {fmt(num)}</span></div>
                   <div className={styles.previewDivider} />
-                  <div className={`${styles.previewRow} ${styles.previewTotal}`}><span>New Total</span><span>{fmt(plan.amountSaved + num)}</span></div>
-                  <div className={styles.previewRow}><span className={styles.previewGreen}>New 30% Yield</span><span className={styles.previewGreen}>{fmt((plan.amountSaved + num) * 0.30)}</span></div>
+                  <div className={`${styles.previewRow} ${styles.previewTotal}`}><span>Balance After Approval</span><span>{fmt(plan.amountSaved + num)}</span></div>
                 </div>
               </div>
             )}
@@ -363,7 +369,7 @@ function DepositModal({ plan, onClose, onSuccess }) {
           </form>
         )}
 
-        {step === 2 && <PaymentStep amount={num} onDone={onClose} label="Done — Deposit Submitted" />}
+        {step === 2 && <PaymentStep amount={num} onDone={onClose} label="Done — Deposit Submitted" note="Your deposit is pending admin approval and will reflect in your balance once approved." />}
       </div>
     </div>
   );
@@ -484,7 +490,7 @@ function ApprovalsModal({ requests, onClose, onAction }) {
               <div className={styles.approvalTop}>
                 <div className={styles.approvalAvatar}>{initials(req.requestedBy)}</div>
                 <div className={styles.approvalInfo}>
-                  <span className={styles.approvalName}>{req.requestedBy?.firstname} {req.requestedBy?.lastname}</span>
+                  <span className={styles.approvalName}>@{req.requestedBy?.username}</span>
                   <span className={styles.approvalMeta}>Requested {fmtDateTime(req.createdAt)}</span>
                 </div>
                 <span className={styles.approvalAmount}>{fmt(req.amount)}</span>
@@ -520,6 +526,9 @@ function PlanCard({ plan, currentUserId, onDeposit, onWithdraw, onInvite, onRefr
   const [expanded,   setExpanded]   = useState(false);
   const [history,    setHistory]    = useState(null);
   const [loadingHist,setLoadingHist]= useState(false);
+  const [depExpanded,   setDepExpanded]   = useState(false);
+  const [deposits,      setDeposits]      = useState(null);
+  const [loadingDeposits,setLoadingDeposits] = useState(false);
 
   const progress = maturityProgress(plan.startDate, plan.maturityDate);
   const ready    = isReadyToMature(plan);
@@ -543,6 +552,16 @@ function PlanCard({ plan, currentUserId, onDeposit, onWithdraw, onInvite, onRefr
       setHistory(res.data ?? []);
     } catch { setHistory([]); }
     finally { setLoadingHist(false); }
+  }
+
+  async function loadDeposits() {
+    if (deposits) { setDepExpanded((v) => !v); return; }
+    setLoadingDeposits(true); setDepExpanded(true);
+    try {
+      const res = await familySavingsApi.getDepositHistory(plan.id);
+      setDeposits(res.data ?? []);
+    } catch { setDeposits([]); }
+    finally { setLoadingDeposits(false); }
   }
 
   return (
@@ -583,7 +602,7 @@ function PlanCard({ plan, currentUserId, onDeposit, onWithdraw, onInvite, onRefr
               key={p.id}
               className={`${styles.participantAvatar} ${p.userId === currentUserId ? styles.participantAvatarSelf : ''}`}
               style={{ zIndex: 10 - i }}
-              title={`${p.user?.firstname} ${p.user?.lastname}${p.userId === plan.createdById ? ' (creator)' : ''}`}
+              title={`@${p.user?.username}${p.userId === plan.createdById ? ' (creator)' : ''}`}
             >
               {p.userId === plan.createdById && <span className={styles.crownIcon}><Ic.Crown /></span>}
               {initials(p.user)}
@@ -601,7 +620,7 @@ function PlanCard({ plan, currentUserId, onDeposit, onWithdraw, onInvite, onRefr
         {plan.participants?.map((p) => (
           <div key={p.id} className={styles.contributionRow}>
             <span className={styles.contributionName}>
-              {p.user?.firstname} {p.user?.lastname}
+              @{p.user?.username}
               {p.userId === plan.createdById && <span className={styles.creatorTag}>Creator</span>}
               {p.userId === currentUserId    && <span className={styles.youTag}>You</span>}
             </span>
@@ -660,6 +679,9 @@ function PlanCard({ plan, currentUserId, onDeposit, onWithdraw, onInvite, onRefr
         <button className={styles.secondaryBtn} onClick={loadHistory}>
           <Ic.History /> {expanded ? 'Hide History' : 'Withdrawal History'}
         </button>
+        <button className={styles.secondaryBtn} onClick={loadDeposits}>
+          <Ic.History /> {depExpanded ? 'Hide Deposits' : 'Deposit History'}
+        </button>
       </div>
 
       {/* Withdrawal history (expanded) */}
@@ -672,13 +694,36 @@ function PlanCard({ plan, currentUserId, onDeposit, onWithdraw, onInvite, onRefr
               <div className={styles.historyItemLeft}>
                 <div className={styles.historyItemAvatar}>{initials(w.requestedBy)}</div>
                 <div>
-                  <span className={styles.historyItemName}>{w.requestedBy?.firstname} {w.requestedBy?.lastname}</span>
+                  <span className={styles.historyItemName}>@{w.requestedBy?.username}</span>
                   <span className={styles.historyItemDate}>{fmtDateTime(w.createdAt)}</span>
                 </div>
               </div>
               <div className={styles.historyItemRight}>
                 <span className={styles.historyItemAmount}>{fmt(w.amount)}</span>
                 <span className={`${styles.historyItemStatus} ${withdrawalStatusColor(w.status)}`}>{w.status}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Deposit history (expanded) */}
+      {depExpanded && (
+        <div className={styles.historyExpand}>
+          {loadingDeposits && <div className={styles.historyLoading}>Loading…</div>}
+          {deposits && deposits.length === 0 && <div className={styles.historyEmpty}>No deposits yet for this plan.</div>}
+          {deposits && deposits.length > 0 && deposits.map((d) => (
+            <div key={d.id} className={styles.historyItem}>
+              <div className={styles.historyItemLeft}>
+                <div className={styles.historyItemAvatar}>{initials(d.depositedBy)}</div>
+                <div>
+                  <span className={styles.historyItemName}>@{d.depositedBy?.username}</span>
+                  <span className={styles.historyItemDate}>{fmtDateTime(d.createdAt)}</span>
+                </div>
+              </div>
+              <div className={styles.historyItemRight}>
+                <span className={styles.historyItemAmount}>{fmt(d.amount)}</span>
+                <span className={`${styles.historyItemStatus} ${withdrawalStatusColor(d.status)}`}>{d.status}</span>
               </div>
             </div>
           ))}
@@ -771,7 +816,7 @@ export default function FamilySavingsPage() {
             {invites.map((inv) => (
               <div key={inv.id} className={styles.inviteCard}>
                 <div className={styles.inviteInfo}>
-                  <span className={styles.inviteFrom}>from <strong>{inv.familySavings?.createdBy?.firstname} {inv.familySavings?.createdBy?.lastname}</strong></span>
+                  <span className={styles.inviteFrom}>from <strong>@{inv.familySavings?.createdBy?.username}</strong></span>
                   <span className={styles.inviteMeta}>{fmt(inv.familySavings?.amountSaved)} · 30% MPY · Matures {fmtDate(inv.familySavings?.maturityDate)}</span>
                 </div>
                 <button className={styles.acceptBtn} onClick={() => acceptInvite(inv.id)}>Accept</button>

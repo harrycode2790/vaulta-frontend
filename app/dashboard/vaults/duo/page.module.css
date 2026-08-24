@@ -271,6 +271,8 @@
 .statusActive    { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
 .statusMatured   { background: #fef3e2; color: #d97706; border: 1px solid #fde68a; }
 .statusWithdrawn { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
+.statusPending   { background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
+.statusRejected  { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
 
 .rateBadge {
   font-size: 0.6875rem;

@@ -63,6 +63,8 @@ function statusColor(status) {
   if (status === 'ACTIVE')    return styles.statusActive;
   if (status === 'MATURED')   return styles.statusMatured;
   if (status === 'WITHDRAWN') return styles.statusWithdrawn;
+  if (status === 'PENDING')   return styles.statusPending;
+  if (status === 'REJECTED')  return styles.statusRejected;
   return styles.statusActive;
 }
 
@@ -205,6 +207,11 @@ function CreateModal({ onClose, onCreated }) {
               <span className={styles.payPlanAmount}>{fmt(num)} principal · {fmt(interest)} interest</span>
             </div>
 
+            <div className={styles.warningBox}>
+              <Ic.Clock />
+              <span>Your plan is pending admin approval and will activate once approved.</span>
+            </div>
+
             {/* Network selector */}
             <div className={styles.netToggleRow}>
               <button
@@ -311,7 +318,7 @@ function WithdrawModal({ plan, onClose, onSuccess }) {
           )}
 
           {error   && <div className={styles.errorBanner} role="alert">{error}</div>}
-          {success && <div className={styles.successBanner} role="status">Withdrawal submitted! Redirecting…</div>}
+          {success && <div className={styles.successBanner} role="status">Withdrawal request submitted and is pending admin approval! Redirecting…</div>}
 
           {/* Amount */}
           <div className={styles.field}>
@@ -476,14 +483,24 @@ function PlanCard({ plan, onWithdraw, onRefresh }) {
               {checking ? 'Checking…' : readyNow ? '✦ Claim Yield' : 'Check Yield'}
             </button>
           )}
-          <button
-            className={styles.withdrawBtn}
-            onClick={() => onWithdraw(plan)}
-            disabled={plan.amountSaved <= 0 && plan.totalPayout <= 0}
-          >
-            Withdraw
-          </button>
+          {(plan.status === 'ACTIVE' || plan.status === 'MATURED') && (
+            <button
+              className={styles.withdrawBtn}
+              onClick={() => onWithdraw(plan)}
+              disabled={plan.amountSaved <= 0 && plan.totalPayout <= 0}
+            >
+              Withdraw
+            </button>
+          )}
         </div>
+      )}
+
+      {plan.status === 'PENDING' && (
+        <div className={styles.withdrawnBadge}>Pending admin approval</div>
+      )}
+
+      {plan.status === 'REJECTED' && (
+        <div className={styles.withdrawnBadge}>Rejected by admin</div>
       )}
 
       {plan.status === 'WITHDRAWN' && (
@@ -519,7 +536,7 @@ function WithdrawalHistory({ items }) {
             <span className={styles.historyAmount}>{fmt(w.amount)}</span>
             <span className={styles.historyWallet}>{w.WalletType ?? '—'}</span>
             <span className={styles.historyAddress} title={w.walletAddress}>{truncate(w.walletAddress)}</span>
-            <span className={`${styles.historyStatus} ${styles.statusDone}`}>SUCCESSFUL</span>
+            <span className={`${styles.historyStatus} ${w.status === 'SUCCESSFUL' ? styles.statusDone : w.status === 'REJECTED' ? styles.statusRej : styles.statusPend}`}>{w.status}</span>
           </div>
         ))}
       </div>

@@ -36,9 +36,7 @@ function BellIcon() {
 
 function initials(user) {
   if (!user) return '?';
-  const f = user.firstname?.[0] ?? '';
-  const l = user.lastname?.[0]  ?? '';
-  return (f + l).toUpperCase() || user.email?.[0]?.toUpperCase() || '?';
+  return user.username?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || '?';
 }
 
 function todayLabel() {
@@ -108,7 +106,7 @@ export default function DashboardShell({ children }) {
               <BellIcon />
               <span className={styles.bellDot} aria-hidden="true" />
             </button>
-            <div className={styles.avatar} title={user ? `${user.firstname} ${user.lastname}` : ''} aria-label="User avatar">
+            <div className={styles.avatar} title={user ? `@${user.username}` : ''} aria-label="User avatar">
               {initials(user)}
             </div>
           </div>

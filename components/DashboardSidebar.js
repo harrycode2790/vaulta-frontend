@@ -37,9 +37,7 @@ const navItems = [
 
 function initials(user) {
   if (!user) return '?';
-  const f = user.firstname?.[0] ?? '';
-  const l = user.lastname?.[0]  ?? '';
-  return (f + l).toUpperCase() || user.email?.[0]?.toUpperCase() || '?';
+  return user.username?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || '?';
 }
 
 export default function DashboardSidebar({ open = false, onClose = () => {}, user = null }) {
@@ -52,7 +50,7 @@ export default function DashboardSidebar({ open = false, onClose = () => {}, use
   }
 
   const displayName = user
-    ? `${user.firstname ?? ''} ${user.lastname ?? ''}`.trim() || user.email
+    ? (user.username ? `@${user.username}` : user.email)
     : '…';
 
   return (

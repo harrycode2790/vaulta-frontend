@@ -21,13 +21,17 @@ function fmtDateTime(iso) {
 }
 function initials(u) {
   if (!u) return '?';
-  return ((u.firstname?.[0] ?? '') + (u.lastname?.[0] ?? '')).toUpperCase() || '?';
+  return u.username?.[0]?.toUpperCase() || '?';
 }
 function statusChip(s) {
   const map = {
     ACTIVE:      { bg: '#14532d', color: '#4ade80', label: 'ACTIVE' },
     MATURED:     { bg: '#713f12', color: '#fbbf24', label: 'MATURED' },
     WITHDRAWN:   { bg: '#1e293b', color: '#94a3b8', label: 'WITHDRAWN' },
+    PENDING:     { bg: '#713f12', color: '#fbbf24', label: 'PENDING' },
+    APPROVED:    { bg: '#14532d', color: '#4ade80', label: 'APPROVED' },
+    REJECTED:    { bg: '#450a0a', color: '#f87171', label: 'REJECTED' },
+    SUCCESSFUL:  { bg: '#14532d', color: '#4ade80', label: 'SUCCESSFUL' },
     OPEN:        { bg: '#1e3a5f', color: '#60a5fa', label: 'OPEN' },
     IN_PROGRESS: { bg: '#3b1f6e', color: '#c084fc', label: 'IN PROGRESS' },
     RESOLVED:    { bg: '#14532d', color: '#4ade80', label: 'RESOLVED' },
@@ -154,7 +158,7 @@ function UserSavingsDrawer({ userId, onClose }) {
       <div className={styles.drawer}>
         <div className={styles.drawerHeader}>
           <div>
-            <h3 className={styles.drawerTitle}>{data?.user ? `${data.user.firstname} ${data.user.lastname}` : 'User'} — Savings</h3>
+            <h3 className={styles.drawerTitle}>{data?.user ? `@${data.user.username}` : 'User'} — Savings</h3>
             <p className={styles.drawerSub}>All savings plans for this user</p>
           </div>
           <button className={styles.closeX} onClick={onClose}>✕</button>
@@ -305,7 +309,6 @@ function UsersSection() {
           <thead>
             <tr>
               <th>User</th>
-              <th>Username</th>
               <th>Email</th>
               <th>Verified</th>
               <th>Joined</th>
@@ -315,19 +318,18 @@ function UsersSection() {
           <tbody>
             {loading ? (
               Array(8).fill(0).map((_, i) => (
-                <tr key={i}><td colSpan={6}><div className={styles.skeletonRow} /></td></tr>
+                <tr key={i}><td colSpan={5}><div className={styles.skeletonRow} /></td></tr>
               ))
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={6} className={styles.emptyCell}>No users found</td></tr>
+              <tr><td colSpan={5} className={styles.emptyCell}>No users found</td></tr>
             ) : filtered.map((u) => (
               <tr key={u.id}>
                 <td>
                   <div className={styles.userCell}>
                     <div className={styles.userAvatar}>{initials(u)}</div>
-                    <span>{u.firstname} {u.lastname}</span>
+                    <span>@{u.username}</span>
                   </div>
                 </td>
-                <td className={styles.mutedCell}>@{u.username}</td>
                 <td className={styles.mutedCell}>{u.email}</td>
                 <td>{u.isEmailVerified
                   ? <span className={styles.verifiedBadge}><Ic.Check /> Yes</span>
@@ -358,7 +360,7 @@ function UsersSection() {
       {viewUser && <UserSavingsDrawer userId={viewUser} onClose={() => setViewUser(null)} />}
       {confirm && (
         <ConfirmDialog
-          message={`Delete ${confirm.firstname} ${confirm.lastname}? This cannot be undone.`}
+          message={`Delete @${confirm.username}? This cannot be undone.`}
           onConfirm={() => handleDelete(confirm.id)}
           onCancel={() => setConfirm(null)}
           loading={deleting}
@@ -461,10 +463,7 @@ function SavingsSection() {
                   <td>
                     <div className={styles.userCell}>
                       <div className={styles.userAvatar} style={{ width: 28, height: 28, fontSize: '0.625rem' }}>{initials(owner)}</div>
-                      <div>
-                        <div style={{ fontSize: '0.8125rem', fontWeight: 600 }}>{owner?.firstname} {owner?.lastname}</div>
-                        <div style={{ fontSize: '0.6875rem', color: '#64748b' }}>@{owner?.username}</div>
-                      </div>
+                      <div style={{ fontSize: '0.8125rem', fontWeight: 600 }}>@{owner?.username}</div>
                     </div>
                   </td>
                   <td className={styles.amtCell}>{fmt(p.amountSaved)}</td>
@@ -542,7 +541,7 @@ function RespondModal({ report, onClose, onSaved }) {
           <p className={styles.reportDesc}>{report.description}</p>
           <div className={styles.reportUser}>
             <div className={styles.userAvatar} style={{ width: 26, height: 26, fontSize: '0.625rem' }}>{initials(report.user)}</div>
-            <span>{report.user?.firstname} {report.user?.lastname} · {fmtDate(report.createdAt)}</span>
+            <span>@{report.user?.username} · {fmtDate(report.createdAt)}</span>
           </div>
         </div>
 
@@ -664,7 +663,7 @@ function ReportsSection() {
               <div className={styles.reportMeta}>
                 <div className={styles.userCell}>
                   <div className={styles.userAvatar} style={{ width: 24, height: 24, fontSize: '0.5625rem' }}>{initials(r.user)}</div>
-                  <span>{r.user?.firstname} {r.user?.lastname}</span>
+                  <span>@{r.user?.username}</span>
                 </div>
                 <span className={styles.mutedCell}>{fmtDate(r.createdAt)}</span>
               </div>
@@ -798,7 +797,7 @@ function SupportSection() {
               <button key={conv.id} className={`${styles.convItem} ${isActive ? styles.convItemActive : ''}`} onClick={() => setSelected(conv)}>
                 <div className={styles.convAvatar}>{initials(conv.user)}</div>
                 <div className={styles.convMeta}>
-                  <div className={styles.convName}>{conv.user?.firstname} {conv.user?.lastname}</div>
+                  <div className={styles.convName}>@{conv.user?.username}</div>
                   <div className={styles.convPreview}>{last?.message?.slice(0, 48) ?? 'No messages'}</div>
                 </div>
                 <div className={styles.convRight}>
@@ -823,7 +822,7 @@ function SupportSection() {
                 <div className={styles.userCell}>
                   <div className={styles.userAvatar}>{initials(selectedConv.user)}</div>
                   <div>
-                    <div className={styles.chatUserName}>{selectedConv.user?.firstname} {selectedConv.user?.lastname}</div>
+                    <div className={styles.chatUserName}>@{selectedConv.user?.username}</div>
                     <div className={styles.chatUserEmail}>{selectedConv.user?.email}</div>
                   </div>
                 </div>
@@ -870,14 +869,180 @@ function SupportSection() {
 }
 
 /* ══════════════════════════════════════
+   SECTION 6: Pending Approvals
+   ══════════════════════════════════════ */
+function ApprovalRow({ title, subtitle, amount, busy, onApprove, onReject }) {
+  return (
+    <div className={styles.reportCard}>
+      <div className={styles.reportCardHead}>
+        <span className={styles.reportSubject}>{title}</span>
+        <span className={styles.amtCell}>{fmt(amount)}</span>
+      </div>
+      <p className={styles.reportDesc}>{subtitle}</p>
+      <div className={styles.reportActions}>
+        <button className={styles.delBtn} onClick={onReject} disabled={busy} title="Reject">
+          Reject
+        </button>
+        <button className={styles.replyBtn} onClick={onApprove} disabled={busy}>
+          {busy ? 'Processing…' : <><Ic.Check /> Approve</>}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ApprovalsSection() {
+  const [data,    setData]    = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [busyId,  setBusyId]  = useState(null);
+  const [error,   setError]   = useState('');
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await adminApi.getSavings('?limit=100&order=desc');
+      setData(res.data);
+    } catch (err) {
+      setError(err.message || 'Failed to load');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const pendingPlans = [
+    ...(data?.singleSavings ?? []).filter(p => p.status === 'PENDING').map(p => ({ type: 'single', plan: p })),
+    ...(data?.duoSavings ?? []).filter(p => p.status === 'PENDING').map(p => ({ type: 'duo', plan: p })),
+    ...(data?.familySavings ?? []).filter(p => p.status === 'PENDING').map(p => ({ type: 'family', plan: p })),
+  ];
+
+  const pendingDeposits = [
+    ...(data?.duoSavings ?? []).flatMap(p => (p.deposits ?? []).filter(d => d.status === 'PENDING').map(d => ({ type: 'duo', deposit: d, plan: p }))),
+    ...(data?.familySavings ?? []).flatMap(p => (p.deposits ?? []).filter(d => d.status === 'PENDING').map(d => ({ type: 'family', deposit: d, plan: p }))),
+  ];
+
+  const pendingWithdrawals = (data?.singleSavings ?? []).flatMap(p =>
+    (p.withdrawals ?? []).filter(w => w.status === 'PENDING').map(w => ({ withdrawal: w, plan: p }))
+  );
+
+  async function runAction(id, fn) {
+    setBusyId(id);
+    setError('');
+    try {
+      await fn();
+      await load();
+    } catch (err) {
+      setError(err.message || 'Action failed');
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  const totalPending = pendingPlans.length + pendingDeposits.length + pendingWithdrawals.length;
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.sectionHead}>
+        <div>
+          <h2 className={styles.sectionTitle}>Pending Approvals</h2>
+          <p className={styles.sectionSub}>{totalPending} item{totalPending !== 1 ? 's' : ''} awaiting review</p>
+        </div>
+      </div>
+
+      {error && <div className={styles.errorBanner}>{error}</div>}
+
+      {loading ? (
+        <div className={styles.reportGrid}>
+          {[1, 2, 3].map(i => <div key={i} className={styles.skeletonCard} style={{ height: 140 }} />)}
+        </div>
+      ) : totalPending === 0 ? (
+        <div className={styles.emptyState}>All caught up — nothing pending approval.</div>
+      ) : (
+        <>
+          {pendingPlans.length > 0 && (
+            <div className={styles.drawerGroup}>
+              <h4 className={styles.drawerGroupTitle}>Plan Creations</h4>
+              <div className={styles.reportGrid}>
+                {pendingPlans.map(({ type, plan }) => {
+                  const owner = plan.user ?? plan.createdBy;
+                  const id = `plan-${type}-${plan.id}`;
+                  return (
+                    <ApprovalRow
+                      key={id}
+                      title={`${type} vault — @${owner?.username}`}
+                      subtitle={`Requested ${fmtDate(plan.createdAt)}`}
+                      amount={plan.amountSaved}
+                      busy={busyId === id}
+                      onApprove={() => runAction(id, () => adminApi.approveSavingsPlan(type, plan.id))}
+                      onReject={() => runAction(id, () => adminApi.rejectSavingsPlan(type, plan.id))}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {pendingDeposits.length > 0 && (
+            <div className={styles.drawerGroup}>
+              <h4 className={styles.drawerGroupTitle}>Deposits</h4>
+              <div className={styles.reportGrid}>
+                {pendingDeposits.map(({ type, deposit, plan }) => {
+                  const owner = plan.user ?? plan.createdBy;
+                  const id = `deposit-${type}-${deposit.id}`;
+                  return (
+                    <ApprovalRow
+                      key={id}
+                      title={`${type} deposit — @${deposit.depositedBy?.username}`}
+                      subtitle={`Into ${owner?.username}'s vault · ${fmtDate(deposit.createdAt)}`}
+                      amount={deposit.amount}
+                      busy={busyId === id}
+                      onApprove={() => runAction(id, () => adminApi.approveDeposit(type, deposit.id))}
+                      onReject={() => runAction(id, () => adminApi.rejectDeposit(type, deposit.id))}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {pendingWithdrawals.length > 0 && (
+            <div className={styles.drawerGroup}>
+              <h4 className={styles.drawerGroupTitle}>Solo Withdrawals</h4>
+              <div className={styles.reportGrid}>
+                {pendingWithdrawals.map(({ withdrawal, plan }) => {
+                  const id = `withdrawal-${withdrawal.id}`;
+                  return (
+                    <ApprovalRow
+                      key={id}
+                      title={`@${plan.user?.username} — ${withdrawal.WalletType ?? 'wallet'}`}
+                      subtitle={`Requested ${fmtDate(withdrawal.createdAt)}`}
+                      amount={withdrawal.amount}
+                      busy={busyId === id}
+                      onApprove={() => runAction(id, () => adminApi.approveSingleWithdrawal(withdrawal.id))}
+                      onReject={() => runAction(id, () => adminApi.rejectSingleWithdrawal(withdrawal.id))}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════
    Admin Shell + Page
    ══════════════════════════════════════ */
 const NAV = [
-  { key: 'overview', label: 'Overview', Icon: Ic.Overview },
-  { key: 'users',    label: 'Users',    Icon: Ic.Users },
-  { key: 'savings',  label: 'Savings',  Icon: Ic.Vault },
-  { key: 'reports',  label: 'Reports',  Icon: Ic.Flag },
-  { key: 'support',  label: 'Support',  Icon: Ic.Chat },
+  { key: 'overview',   label: 'Overview',   Icon: Ic.Overview },
+  { key: 'users',      label: 'Users',      Icon: Ic.Users },
+  { key: 'savings',    label: 'Savings',    Icon: Ic.Vault },
+  { key: 'approvals',  label: 'Approvals',  Icon: Ic.Check },
+  { key: 'reports',    label: 'Reports',    Icon: Ic.Flag },
+  { key: 'support',    label: 'Support',    Icon: Ic.Chat },
 ];
 
 export default function AdminDashboard() {
@@ -927,11 +1092,12 @@ export default function AdminDashboard() {
 
       {/* Main */}
       <main className={styles.main}>
-        {section === 'overview' && <OverviewSection />}
-        {section === 'users'    && <UsersSection />}
-        {section === 'savings'  && <SavingsSection />}
-        {section === 'reports'  && <ReportsSection />}
-        {section === 'support'  && <SupportSection />}
+        {section === 'overview'  && <OverviewSection />}
+        {section === 'users'     && <UsersSection />}
+        {section === 'savings'   && <SavingsSection />}
+        {section === 'approvals' && <ApprovalsSection />}
+        {section === 'reports'   && <ReportsSection />}
+        {section === 'support'   && <SupportSection />}
       </main>
     </div>
   );

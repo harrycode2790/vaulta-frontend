@@ -187,6 +187,8 @@
 .statusActive    { background: #e8f8ee; color: #16a34a; border: 1px solid #bbf7d0; }
 .statusMatured   { background: #fef3e2; color: #d97706; border: 1px solid #fde68a; }
 .statusWithdrawn { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
+.statusPending   { background: #fef3e2; color: #d97706; border: 1px solid #fde68a; }
+.statusRejected  { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
 
 .rateBadge {
   font-size: 0.6875rem;
@@ -898,6 +900,8 @@
 .historyAddress { font-family: monospace; font-size: 0.75rem; color: var(--color-text-primary); }
 .historyStatus  { font-size: 0.625rem; font-weight: 700; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 100px; }
 .statusDone     { background: #e8f8ee; color: #16a34a; }
+.statusPend     { background: #fef3e2; color: #d97706; }
+.statusRej      { background: #fef2f2; color: #b91c1c; }
 
 /* ══════════════════════════════
    Responsive
