@@ -398,7 +398,7 @@ function SavingsSection() {
   async function handleDelete(type, id) {
     setDeleting(true);
     try {
-      await adminApi.deleteSavings(type, id);
+      await adminApi.deleteSavings(id);
       setConfirm(null);
       load();
     } catch (err) {
@@ -892,7 +892,9 @@ function ApprovalRow({ title, subtitle, amount, busy, onApprove, onReject }) {
 }
 
 function ApprovalsSection() {
-  const [data,    setData]    = useState(null);
+  const [pendingPlans,       setPendingPlans]       = useState([]);
+  const [pendingDeposits,    setPendingDeposits]    = useState([]);
+  const [pendingWithdrawals, setPendingWithdrawals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busyId,  setBusyId]  = useState(null);
   const [error,   setError]   = useState('');
@@ -900,8 +902,14 @@ function ApprovalsSection() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminApi.getSavings('?limit=100&order=desc');
-      setData(res.data);
+      const [plansRes, depositsRes, withdrawalsRes] = await Promise.all([
+        adminApi.getPendingPlans(),
+        adminApi.getPendingDeposits(),
+        adminApi.getPendingWithdrawals(),
+      ]);
+      setPendingPlans(plansRes.data?.allPending ?? []);
+      setPendingDeposits(depositsRes.data ?? []);
+      setPendingWithdrawals(withdrawalsRes.data ?? []);
     } catch (err) {
       setError(err.message || 'Failed to load');
     } finally {
@@ -910,21 +918,6 @@ function ApprovalsSection() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
-
-  const pendingPlans = [
-    ...(data?.singleSavings ?? []).filter(p => p.status === 'PENDING').map(p => ({ type: 'single', plan: p })),
-    ...(data?.duoSavings ?? []).filter(p => p.status === 'PENDING').map(p => ({ type: 'duo', plan: p })),
-    ...(data?.familySavings ?? []).filter(p => p.status === 'PENDING').map(p => ({ type: 'family', plan: p })),
-  ];
-
-  const pendingDeposits = [
-    ...(data?.duoSavings ?? []).flatMap(p => (p.deposits ?? []).filter(d => d.status === 'PENDING').map(d => ({ type: 'duo', deposit: d, plan: p }))),
-    ...(data?.familySavings ?? []).flatMap(p => (p.deposits ?? []).filter(d => d.status === 'PENDING').map(d => ({ type: 'family', deposit: d, plan: p }))),
-  ];
-
-  const pendingWithdrawals = (data?.singleSavings ?? []).flatMap(p =>
-    (p.withdrawals ?? []).filter(w => w.status === 'PENDING').map(w => ({ withdrawal: w, plan: p }))
-  );
 
   async function runAction(id, fn) {
     setBusyId(id);
@@ -964,18 +957,18 @@ function ApprovalsSection() {
             <div className={styles.drawerGroup}>
               <h4 className={styles.drawerGroupTitle}>Plan Creations</h4>
               <div className={styles.reportGrid}>
-                {pendingPlans.map(({ type, plan }) => {
+                {pendingPlans.map((plan) => {
                   const owner = plan.user ?? plan.createdBy;
-                  const id = `plan-${type}-${plan.id}`;
+                  const id = `plan-${plan.id}`;
                   return (
                     <ApprovalRow
                       key={id}
-                      title={`${type} vault — @${owner?.username}`}
+                      title={`${plan.savingsType} vault — @${owner?.username}`}
                       subtitle={`Requested ${fmtDate(plan.createdAt)}`}
                       amount={plan.amountSaved}
                       busy={busyId === id}
-                      onApprove={() => runAction(id, () => adminApi.approveSavingsPlan(type, plan.id))}
-                      onReject={() => runAction(id, () => adminApi.rejectSavingsPlan(type, plan.id))}
+                      onApprove={() => runAction(id, () => adminApi.approveSavingsPlan(plan.id))}
+                      onReject={() => runAction(id, () => adminApi.rejectSavingsPlan(plan.id))}
                     />
                   );
                 })}
@@ -987,18 +980,17 @@ function ApprovalsSection() {
             <div className={styles.drawerGroup}>
               <h4 className={styles.drawerGroupTitle}>Deposits</h4>
               <div className={styles.reportGrid}>
-                {pendingDeposits.map(({ type, deposit, plan }) => {
-                  const owner = plan.user ?? plan.createdBy;
-                  const id = `deposit-${type}-${deposit.id}`;
+                {pendingDeposits.map((deposit) => {
+                  const id = `deposit-${deposit.id}`;
                   return (
                     <ApprovalRow
                       key={id}
-                      title={`${type} deposit — @${deposit.depositedBy?.username}`}
-                      subtitle={`Into ${owner?.username}'s vault · ${fmtDate(deposit.createdAt)}`}
+                      title={`${deposit.savingsType} deposit — @${deposit.depositedBy?.username}`}
+                      subtitle={`Requested ${fmtDate(deposit.createdAt)}`}
                       amount={deposit.amount}
                       busy={busyId === id}
-                      onApprove={() => runAction(id, () => adminApi.approveDeposit(type, deposit.id))}
-                      onReject={() => runAction(id, () => adminApi.rejectDeposit(type, deposit.id))}
+                      onApprove={() => runAction(id, () => adminApi.approveDeposit(deposit.id))}
+                      onReject={() => runAction(id, () => adminApi.rejectDeposit(deposit.id))}
                     />
                   );
                 })}
@@ -1010,12 +1002,12 @@ function ApprovalsSection() {
             <div className={styles.drawerGroup}>
               <h4 className={styles.drawerGroupTitle}>Solo Withdrawals</h4>
               <div className={styles.reportGrid}>
-                {pendingWithdrawals.map(({ withdrawal, plan }) => {
+                {pendingWithdrawals.map((withdrawal) => {
                   const id = `withdrawal-${withdrawal.id}`;
                   return (
                     <ApprovalRow
                       key={id}
-                      title={`@${plan.user?.username} — ${withdrawal.WalletType ?? 'wallet'}`}
+                      title={`@${withdrawal.user?.username} — ${withdrawal.WalletType ?? 'wallet'}`}
                       subtitle={`Requested ${fmtDate(withdrawal.createdAt)}`}
                       amount={withdrawal.amount}
                       busy={busyId === id}
