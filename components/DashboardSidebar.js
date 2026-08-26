@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { authApi } from '@/lib/api';
+import { userToken } from '@/lib/tokenStorage';
 import styles from './DashboardSidebar.module.css';
 
 /* ── Icons ── */
@@ -46,6 +47,7 @@ export default function DashboardSidebar({ open = false, onClose = () => {}, use
 
   async function handleLogout() {
     try { await authApi.logout(); } catch { /* ignore */ }
+    userToken.clear();
     router.replace('/login');
   }
 

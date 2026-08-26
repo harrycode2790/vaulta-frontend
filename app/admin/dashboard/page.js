@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminApi } from '@/lib/adminApi';
+import { adminToken } from '@/lib/tokenStorage';
 import styles from './page.module.css';
 
 /* ══════════════════════════════════════
@@ -1042,10 +1043,8 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   function logout() {
-    // Clear the cookie by expiring it via the user logout endpoint
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:46753'}/api/auth/logout`, {
-      method: 'POST', credentials: 'include',
-    }).finally(() => router.replace('/admin/login'));
+    adminToken.clear();
+    router.replace('/admin/login');
   }
 
   return (

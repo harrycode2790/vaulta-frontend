@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminApi } from '@/lib/adminApi';
+import { adminToken } from '@/lib/tokenStorage';
 import styles from './page.module.css';
 
 export default function AdminLoginPage() {
@@ -17,7 +18,8 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
     try {
-      await adminApi.login({ email, password });
+      const res = await adminApi.login({ email, password });
+      adminToken.set(res.data.token);
       router.replace('/admin/dashboard');
     } catch (err) {
       setError(err.message || 'Invalid credentials. Try again.');

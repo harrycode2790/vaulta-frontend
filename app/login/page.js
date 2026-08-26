@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { authApi } from '@/lib/api';
+import { userToken } from '@/lib/tokenStorage';
 import styles from './page.module.css';
 
 function GoogleIcon() {
@@ -73,7 +74,8 @@ export default function LoginPage() {
     const password = form.password.value;
 
     try {
-      await authApi.login({ email, password });
+      const res = await authApi.login({ email, password });
+      userToken.set(res.data.token);
       router.push('/dashboard');
     } catch (err) {
       // Backend returns 403 if email not verified → go verify
