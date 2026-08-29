@@ -63,6 +63,7 @@ const Ic = {
   ChevL:    () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>,
   Logout:   () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
   Check:    () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+  UserPlus: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>,
 };
 
 /* ══════════════════════════════════════
@@ -1027,6 +1028,137 @@ function ApprovalsSection() {
 }
 
 /* ══════════════════════════════════════
+   SECTION 7: Admins
+   ══════════════════════════════════════ */
+function CreateAdminModal({ onClose, onCreated }) {
+  const [username, setUsername] = useState('');
+  const [email,    setEmail]    = useState('');
+  const [password, setPassword] = useState('');
+  const [loading,  setLoading]  = useState(false);
+  const [error,    setError]    = useState('');
+  const [done,     setDone]     = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      await adminApi.register({ username, email, password });
+      setDone(true);
+      onCreated({ username, email });
+      setTimeout(onClose, 1200);
+    } catch (err) {
+      setError(err.message || 'Failed to create admin');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className={styles.dialog} style={{ maxWidth: 420, width: '100%' }}>
+        <div className={styles.dialogHeader}>
+          <h3 className={styles.dialogTitle}>Create New Admin</h3>
+          <button className={styles.closeX} onClick={onClose}>✕</button>
+        </div>
+
+        <form onSubmit={handleSubmit} className={styles.respondForm}>
+          {error && <div className={styles.errorBanner}>{error}</div>}
+          {done  && <div className={styles.successBanner}>Admin created!</div>}
+
+          <div className={styles.respondField}>
+            <label className={styles.respondLabel}>USERNAME</label>
+            <input
+              className={styles.respondInput}
+              placeholder="e.g. jane_admin"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              minLength={3}
+              maxLength={30}
+              required
+            />
+          </div>
+
+          <div className={styles.respondField}>
+            <label className={styles.respondLabel}>EMAIL</label>
+            <input
+              type="email"
+              className={styles.respondInput}
+              placeholder="name@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className={styles.respondField}>
+            <label className={styles.respondLabel}>PASSWORD</label>
+            <input
+              type="password"
+              className={styles.respondInput}
+              placeholder="Min. 6 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              minLength={6}
+              maxLength={32}
+              required
+            />
+          </div>
+
+          <div className={styles.dialogBtns}>
+            <button type="button" className={styles.dialogCancel} onClick={onClose} disabled={loading}>Cancel</button>
+            <button type="submit" className={styles.dialogPrimary} disabled={loading || done}>
+              {loading ? 'Creating…' : 'Create Admin'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function AdminsSection() {
+  const [showModal, setShowModal] = useState(false);
+  const [created,   setCreated]   = useState([]);
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.sectionHead}>
+        <div>
+          <h2 className={styles.sectionTitle}>Admins</h2>
+          <p className={styles.sectionSub}>Create additional admin accounts</p>
+        </div>
+        <button className={styles.replyBtn} onClick={() => setShowModal(true)}>
+          <Ic.UserPlus /> New Admin
+        </button>
+      </div>
+
+      {created.length === 0 ? (
+        <div className={styles.emptyState}>No admins created this session yet.</div>
+      ) : (
+        <div className={styles.reportGrid}>
+          {created.map((a, i) => (
+            <div key={i} className={styles.reportCard}>
+              <div className={styles.reportCardHead}>
+                <span className={styles.reportSubject}>@{a.username}</span>
+              </div>
+              <p className={styles.reportDesc}>{a.email}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showModal && (
+        <CreateAdminModal
+          onClose={() => setShowModal(false)}
+          onCreated={(admin) => setCreated((prev) => [admin, ...prev])}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════
    Admin Shell + Page
    ══════════════════════════════════════ */
 const NAV = [
@@ -1034,6 +1166,7 @@ const NAV = [
   { key: 'users',      label: 'Users',      Icon: Ic.Users },
   { key: 'savings',    label: 'Savings',    Icon: Ic.Vault },
   { key: 'approvals',  label: 'Approvals',  Icon: Ic.Check },
+  { key: 'admins',     label: 'Admins',     Icon: Ic.UserPlus },
   { key: 'reports',    label: 'Reports',    Icon: Ic.Flag },
   { key: 'support',    label: 'Support',    Icon: Ic.Chat },
 ];
@@ -1087,6 +1220,7 @@ export default function AdminDashboard() {
         {section === 'users'     && <UsersSection />}
         {section === 'savings'   && <SavingsSection />}
         {section === 'approvals' && <ApprovalsSection />}
+        {section === 'admins'    && <AdminsSection />}
         {section === 'reports'   && <ReportsSection />}
         {section === 'support'   && <SupportSection />}
       </main>
