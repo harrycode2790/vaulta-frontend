@@ -1262,12 +1262,27 @@ const NAV = [
 
 export default function AdminDashboard() {
   const [section, setSection] = useState('overview');
+  const [authorized, setAuthorized] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (adminToken.get()) {
+      setAuthorized(true);
+      return;
+    }
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.replace('/');
+    }
+  }, [router]);
 
   function logout() {
     adminToken.clear();
     router.replace('/admin/login');
   }
+
+  if (!authorized) return null;
 
   return (
     <div className={styles.shell}>

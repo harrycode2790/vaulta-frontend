@@ -1,0 +1,125 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.netToggleRow {
+  display: flex;
+  gap: 8px;
+}
+
+.netToggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1.5px solid #dde2e8;
+  border-radius: 12px;
+  background: #fafafa;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.netToggle:hover { border-color: #0369a1; color: #0369a1; }
+
+.netToggleActive {
+  border-color: #0369a1;
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.addressCard {
+  border: 1.5px solid #dde2e8;
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeSlideIn 0.28s ease;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .addressCard { animation: none; }
+}
+
+.addressLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.networkBadge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: #0369a1;
+  background: #e0f2fe;
+  padding: 3px 9px;
+  border-radius: 100px;
+}
+
+.addressMeta {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.qrWrap {
+  display: flex;
+  justify-content: center;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #eaecef;
+  border-radius: 12px;
+}
+
+.addressRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f4f6f9;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.addressCode {
+  flex: 1;
+  font-family: monospace;
+  font-size: 0.8125rem;
+  color: var(--color-text-primary);
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.copyBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--color-white);
+  border: 1px solid #dde2e8;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.copyBtn:hover { background: #f4f6f9; border-color: #c0c8d0; }
+
+@media (max-width: 640px) {
+  .netToggleRow { flex-direction: column; }
+}

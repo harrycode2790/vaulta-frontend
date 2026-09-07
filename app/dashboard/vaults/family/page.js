@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { familySavingsApi, authApi } from '@/lib/api';
+import CryptoPaymentCard from '@/components/CryptoPaymentCard';
 import styles from './page.module.css';
 
 /* ══════════════════════════════
@@ -11,8 +12,6 @@ const Ic = {
   ArrowLeft:  () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>,
   Plus:       () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
   Close:      () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-  Copy:       () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
-  Check:      () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
   Users:      () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
   UserPlus:   () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>,
   Deposit:    () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>,
@@ -77,30 +76,9 @@ function withdrawalStatusColor(status) {
 }
 
 /* ══════════════════════════════
-   Copy button
-   ══════════════════════════════ */
-function CopyBtn({ text }) {
-  const [copied, setCopied] = useState(false);
-  function handle() {
-    navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
-  }
-  return (
-    <button className={styles.copyBtn} onClick={handle}>
-      {copied ? <Ic.Check /> : <Ic.Copy />}
-      {copied ? 'Copied' : 'Copy'}
-    </button>
-  );
-}
-
-/* ══════════════════════════════
    Payment step (reusable)
    ══════════════════════════════ */
-function PaymentStep({ amount, onDone, label = 'Done — I\'ve Made Payment', note }) {
-  const [net, setNet] = useState('bitcoin');
-  const btc = { network: 'Bitcoin',   address: 'bc1qs9q7ynsldjwn62rtjha3q29v54ewqef08fxrdp', amountToPay: amount };
-  const eth = { network: 'Ethereum',  address: '0xFCa95a8187e9BEd54df102C111CedaF93f596F2D', amountToPay: amount };
-  const info = net === 'bitcoin' ? btc : eth;
-
+function PaymentStep({ amount, paymentDetails, onDone, label = 'Done — I\'ve Made Payment', note }) {
   return (
     <div className={styles.modalBody}>
       {note && (
@@ -109,20 +87,7 @@ function PaymentStep({ amount, onDone, label = 'Done — I\'ve Made Payment', no
           <span>{note}</span>
         </div>
       )}
-      <div className={styles.netToggleRow}>
-        <button className={`${styles.netToggle} ${net === 'bitcoin'  ? styles.netToggleActive : ''}`} onClick={() => setNet('bitcoin')}><Ic.Bitcoin /> Bitcoin</button>
-        <button className={`${styles.netToggle} ${net === 'ethereum' ? styles.netToggleActive : ''}`} onClick={() => setNet('ethereum')}><Ic.Ethereum /> Ethereum</button>
-      </div>
-      <div className={styles.addressCard}>
-        <div className={styles.addressLabel}>
-          <span className={styles.networkBadge}>{info.network}</span>
-          <span className={styles.addressMeta}>Send exactly {fmt(info.amountToPay)}</span>
-        </div>
-        <div className={styles.addressRow}>
-          <code className={styles.addressCode}>{info.address}</code>
-          <CopyBtn text={info.address} />
-        </div>
-      </div>
+      <CryptoPaymentCard bitcoin={paymentDetails?.bitcoin} ethereum={paymentDetails?.ethereum} />
       <div className={styles.warningBox}><Ic.Alert /><span>Send the exact amount shown. Sending a different amount may result in an unconfirmed plan.</span></div>
       <button className={styles.primaryBtn} onClick={onDone}>{label}</button>
     </div>
@@ -137,6 +102,7 @@ function CreateModal({ onClose, onCreated }) {
   const [amount,  setAmount]  = useState('');
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
+  const [result,  setResult]  = useState(null);
 
   const num      = parseFloat(amount) || 0;
   const interest = +(num * 0.30).toFixed(2);
@@ -148,7 +114,8 @@ function CreateModal({ onClose, onCreated }) {
     if (!valid) { setError('Minimum savings amount is $1,000'); return; }
     setError(''); setLoading(true);
     try {
-      await familySavingsApi.create({ amount: num });
+      const res = await familySavingsApi.create({ amount: num });
+      setResult(res.data);
       onCreated();
       setStep(2);
     } catch (err) {
@@ -203,7 +170,7 @@ function CreateModal({ onClose, onCreated }) {
         )}
 
         {step === 2 && (
-          <PaymentStep amount={num} onDone={onClose} note="Your vault is pending admin approval and will activate once approved." />
+          <PaymentStep amount={num} paymentDetails={result?.paymentDetails} onDone={onClose} note="Your vault is pending admin approval and will activate once approved." />
         )}
       </div>
     </div>
@@ -315,6 +282,7 @@ function DepositModal({ plan, onClose, onSuccess }) {
   const [amount,  setAmount]  = useState('');
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
+  const [result,  setResult]  = useState(null);
 
   const num   = parseFloat(amount) || 0;
   const valid = num > 0;
@@ -324,7 +292,8 @@ function DepositModal({ plan, onClose, onSuccess }) {
     if (!valid) return;
     setError(''); setLoading(true);
     try {
-      await familySavingsApi.deposit(plan.id, { amount: num });
+      const res = await familySavingsApi.deposit(plan.id, { amount: num });
+      setResult(res.data);
       onSuccess();
       setStep(2);
     } catch (err) {
@@ -369,7 +338,7 @@ function DepositModal({ plan, onClose, onSuccess }) {
           </form>
         )}
 
-        {step === 2 && <PaymentStep amount={num} onDone={onClose} label="Done — Deposit Submitted" note="Your deposit is pending admin approval and will reflect in your balance once approved." />}
+        {step === 2 && <PaymentStep amount={num} paymentDetails={result?.paymentDetails} onDone={onClose} label="Done — Deposit Submitted" note="Your deposit is pending admin approval and will reflect in your balance once approved." />}
       </div>
     </div>
   );

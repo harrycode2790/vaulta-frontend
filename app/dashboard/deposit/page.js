@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { duoSavingsApi, familySavingsApi } from '@/lib/api';
+import CryptoPaymentCard from '@/components/CryptoPaymentCard';
 import styles from './page.module.css';
 
 /* ══════════════════════════════
@@ -9,12 +10,8 @@ import styles from './page.module.css';
    ══════════════════════════════ */
 const Ic = {
   ArrowLeft: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>,
-  Copy:      () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
-  Check:     () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
   Clock:     () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
   Alert:     () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
-  Bitcoin:   () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1.5 13.5H9v-3h4.5a1.5 1.5 0 0 1 0 3zM9 12V9h4a1.5 1.5 0 0 1 0 3z"/></svg>,
-  Ethereum:  () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 12 12 22 22 12"/></svg>,
   Vault:     () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
   Users:     () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
 };
@@ -28,23 +25,9 @@ function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-function CopyBtn({ text }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button type="button" className={styles.copyBtn} onClick={() => {
-      navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
-    }}>
-      {copied ? <Ic.Check /> : <Ic.Copy />}
-      {copied ? 'Copied' : 'Copy'}
-    </button>
-  );
-}
-
 /* Crypto payment step — mirrors the pattern already used on the vault pages,
    using the real paymentDetails returned by the deposit response. */
 function PaymentStep({ amount, interestRate, paymentDetails, onDone }) {
-  const [selNet, setSelNet] = useState('bitcoin');
-  const netInfo = selNet === 'bitcoin' ? paymentDetails?.bitcoin : paymentDetails?.ethereum;
   const interest = +(amount * (interestRate / 100)).toFixed(2);
 
   return (
@@ -59,27 +42,7 @@ function PaymentStep({ amount, interestRate, paymentDetails, onDone }) {
         <span>Your deposit is pending admin approval and will reflect in your balance once approved.</span>
       </div>
 
-      <div className={styles.netToggleRow}>
-        <button type="button" className={`${styles.netToggle} ${selNet === 'bitcoin' ? styles.netToggleActive : ''}`} onClick={() => setSelNet('bitcoin')}>
-          <Ic.Bitcoin /> Bitcoin
-        </button>
-        <button type="button" className={`${styles.netToggle} ${selNet === 'ethereum' ? styles.netToggleActive : ''}`} onClick={() => setSelNet('ethereum')}>
-          <Ic.Ethereum /> Ethereum
-        </button>
-      </div>
-
-      {netInfo && (
-        <div className={styles.addressCard}>
-          <div className={styles.addressLabel}>
-            <span className={styles.networkBadge}>{netInfo.network}</span>
-            <span className={styles.addressMeta}>Send exactly {fmt(netInfo.amountToPay)}</span>
-          </div>
-          <div className={styles.addressRow}>
-            <code className={styles.addressCode}>{netInfo.address}</code>
-            <CopyBtn text={netInfo.address} />
-          </div>
-        </div>
-      )}
+      <CryptoPaymentCard bitcoin={paymentDetails?.bitcoin} ethereum={paymentDetails?.ethereum} />
 
       <div className={styles.warningBox}>
         <Ic.Alert />
