@@ -111,7 +111,6 @@ function Skeleton({ className }) {
 const quickActions = [
   { label: 'Deposit',  Icon: Icon.Plus,      href: '/dashboard/deposit' },
   { label: 'Withdraw', Icon: Icon.ArrowDown, href: '/dashboard/withdraw' },
-  { label: 'Transfer', Icon: Icon.Send,       href: '/dashboard/transfer' },
   { label: 'Invite',   Icon: Icon.Users,      href: '/dashboard/invite' },
 ];
 

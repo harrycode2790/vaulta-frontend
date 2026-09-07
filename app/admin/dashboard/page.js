@@ -64,6 +64,7 @@ const Ic = {
   Logout:   () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
   Check:    () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
   UserPlus: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>,
+  Wallet:   () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>,
 };
 
 /* ══════════════════════════════════════
@@ -1159,6 +1160,93 @@ function AdminsSection() {
 }
 
 /* ══════════════════════════════════════
+   SECTION 8: Payment Wallets
+   ══════════════════════════════════════ */
+function WalletRow({ network, label, wallet, onSaved }) {
+  const [address, setAddress] = useState(wallet?.address ?? '');
+  const [saving,  setSaving]  = useState(false);
+  const [saved,   setSaved]   = useState(false);
+  const [error,   setError]   = useState('');
+
+  async function handleSave() {
+    if (!address.trim()) return;
+    setError('');
+    setSaving(true);
+    try {
+      await adminApi.updatePaymentWallet(network, { address: address.trim() });
+      setSaved(true);
+      onSaved();
+      setTimeout(() => setSaved(false), 2000);
+    } catch (err) {
+      setError(err.message || 'Failed to update address');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className={styles.respondField}>
+      <label className={styles.respondLabel}>{label}</label>
+      {error && <div className={styles.errorBanner}>{error}</div>}
+      <div style={{ display: 'flex', gap: 8 }}>
+        <input
+          className={styles.respondInput}
+          style={{ flex: 1 }}
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder={`${label} address`}
+          spellCheck={false}
+        />
+        <button className={styles.dialogPrimary} onClick={handleSave} disabled={saving || !address.trim()}>
+          {saving ? 'Saving…' : saved ? 'Saved!' : 'Save'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function WalletsSection() {
+  const [wallets, setWallets] = useState(null);
+  const [loading,  setLoading] = useState(true);
+  const [error,    setError]   = useState('');
+
+  const load = useCallback(() => {
+    setLoading(true);
+    adminApi.getPaymentWallets()
+      .then((res) => setWallets(res.data ?? []))
+      .catch((err) => setError(err.message || 'Failed to load wallet addresses'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const btc = wallets?.find((w) => w.network === 'BITCOIN');
+  const eth = wallets?.find((w) => w.network === 'ETHEREUM');
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.sectionHead}>
+        <div>
+          <h2 className={styles.sectionTitle}>Wallets</h2>
+          <p className={styles.sectionSub}>Addresses shown to users for crypto deposits and payments</p>
+        </div>
+      </div>
+
+      {error && <div className={styles.errorBanner}>{error}</div>}
+
+      {loading ? (
+        <div className={styles.skeletonCard} style={{ height: 160 }} />
+      ) : (
+        <div className={styles.respondForm} style={{ maxWidth: 520 }}>
+          <WalletRow network="BITCOIN"  label="Bitcoin"  wallet={btc} onSaved={load} />
+          <WalletRow network="ETHEREUM" label="Ethereum" wallet={eth} onSaved={load} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════
    Admin Shell + Page
    ══════════════════════════════════════ */
 const NAV = [
@@ -1167,6 +1255,7 @@ const NAV = [
   { key: 'savings',    label: 'Savings',    Icon: Ic.Vault },
   { key: 'approvals',  label: 'Approvals',  Icon: Ic.Check },
   { key: 'admins',     label: 'Admins',     Icon: Ic.UserPlus },
+  { key: 'wallets',    label: 'Wallets',    Icon: Ic.Wallet },
   { key: 'reports',    label: 'Reports',    Icon: Ic.Flag },
   { key: 'support',    label: 'Support',    Icon: Ic.Chat },
 ];
@@ -1221,6 +1310,7 @@ export default function AdminDashboard() {
         {section === 'savings'   && <SavingsSection />}
         {section === 'approvals' && <ApprovalsSection />}
         {section === 'admins'    && <AdminsSection />}
+        {section === 'wallets'   && <WalletsSection />}
         {section === 'reports'   && <ReportsSection />}
         {section === 'support'   && <SupportSection />}
       </main>

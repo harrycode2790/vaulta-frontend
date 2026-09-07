@@ -12,6 +12,9 @@ const PAGE_TITLES = {
   '/dashboard/vaults':       { title: 'My Vaults',    sub: 'Manage your savings plans' },
   '/dashboard/analytics':    { title: 'Analytics',    sub: 'Track your growth' },
   '/dashboard/transactions': { title: 'Transactions', sub: 'Your full history' },
+  '/dashboard/deposit':      { title: 'Deposit',      sub: 'Add funds to a vault' },
+  '/dashboard/withdraw':     { title: 'Withdraw',     sub: 'Request a withdrawal' },
+  '/dashboard/invite':       { title: 'Invite',       sub: 'Manage vault invitations' },
   '/dashboard/settings':     { title: 'Settings',     sub: 'Manage your account' },
 };
 
